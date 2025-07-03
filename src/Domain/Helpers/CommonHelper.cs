@@ -264,11 +264,6 @@ public static class CommonHelper
         return Guid.Parse(claimValue);
     }
 
-    public static string[] GetUserRoleClaims(this IEnumerable<Claim> claims)
-    {
-        return claims.Where(x => x.Type == RolePolicyConstants.ClaimType).Select(i => i.Value).ToArray();
-    }
-
     public static bool IsValidEmail(this string email)
     {
         var text = email.Trim();
@@ -282,12 +277,6 @@ public static class CommonHelper
         {
             return false;
         }
-    }
-
-    public static bool ValidatePasswordPolicy(this string password)
-    {
-        var regex = new Regex(UserConstants.Password.RegexPattern, RegexOptions.None, TimeSpan.FromSeconds(30));
-        return regex.IsMatch(password);
     }
 
     public static string HashPassword(this string password)
@@ -592,31 +581,6 @@ public static class CommonHelper
         {
             return "";
         }
-    }
-
-    /// <summary>
-    /// Formats a JSON datetime value to a specific format
-    /// </summary>
-    /// <param name="json">The JSON object to extract from</param>
-    /// <param name="key">The datetime key to format</param>
-    /// <param name="format">The desired datetime format</param>
-    /// <returns>Formatted datetime string or original value if parsing fails</returns>
-    public static string GetFormattedJsonDateTime(this JObject? json, string key, string format = DateTimeFormats.DateTime)
-    {
-        var value = json.GetJsonValue(key);
-
-        if (DateTime.TryParse(value, out var dateTime))
-        {
-            return dateTime.ToString(format);
-        }
-
-        return value;
-    }
-
-    public static Guid? GetAgentIdNullable(this IEnumerable<Claim>? claims)
-    {
-        var claimValue = claims?.FirstOrDefault(x => x.Type == AgentConstants.AgentId)?.Value;
-        return claimValue != null ? Guid.Parse(claimValue) : null;
     }
 
     /// <summary>

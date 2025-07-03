@@ -1,10 +1,11 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FortressOfTheFallen.Presentation.Controller.v1;
 
-[ApiController]
-[Route("api/v1/[controller]")]
-public class HelloController : ControllerBase
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}")]
+public class HelloController : BaseController
 {
     [HttpGet]
     public IActionResult Get()
