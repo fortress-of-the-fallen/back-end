@@ -3,7 +3,7 @@ services:
     image: mongo:6.0
     restart: always
     ports:
-      - "27017:27017" # for local
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123123123
@@ -18,7 +18,7 @@ services:
     image: redis/redis-stack:latest
     ports:
       - "6379:6379"
-      - "8011:8001" # for local
+      - "8011:8001" 
     networks:
       - fortress-of-the-fallen
 

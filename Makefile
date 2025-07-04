@@ -26,4 +26,8 @@ dev:
 	@echo "-----------------------------------"
 
 clean:
-	@rm -rf docker/data
+	@rm -rf docker/data || true
+	@cd src/Presentation && dotnet clean || true
+	@cd src/Domain && dotnet clean || true
+	@cd src/Infrastructure && dotnet clean || true
+	@cd src/Application && dotnet clean || true
