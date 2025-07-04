@@ -3,30 +3,29 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models.Responses.Base;
 
-namespace FortressOfTheFallen.Presentation.Controller
+namespace FortressOfTheFallen.Presentation.Controller;
+
+[Authorize]
+[ApiController]
+public class BaseController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    public class BaseController : ControllerBase
+    [NonAction]
+    protected IActionResult InternalServerError(object? data)
     {
-        [NonAction]
-        protected IActionResult InternalServerError(object? data)
+        if (data is ExecutionRes apiResult)
         {
-            if (data is ExecutionRes apiResult)
-            {
-                apiResult.Error = string.IsNullOrEmpty(apiResult.Error)
-                    ? "Something went wrong. Please try again later"
-                    : apiResult.Error;
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError, data);
+            apiResult.Error = string.IsNullOrEmpty(apiResult.Error)
+                ? "Something went wrong. Please try again later"
+                : apiResult.Error;
         }
 
-        [NonAction]
-        protected IActionResult BadRequest<T>(ResultRes<T> response, string errorCode)
-        {
-            response.ErrorCode = errorCode;
-            return BadRequest(response);
-        }
+        return StatusCode(StatusCodes.Status500InternalServerError, data);
+    }
+
+    [NonAction]
+    protected IActionResult BadRequest<T>(ResultRes<T> response, string errorCode)
+    {
+        response.ErrorCode = errorCode;
+        return BadRequest(response);
     }
 }
