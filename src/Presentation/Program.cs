@@ -29,7 +29,7 @@ app.UseCors();
 
 try
 {
-    var url = "http://localhost:5268/docs";
+    var url = "http://localhost:8080/docs";
     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
     {
         FileName = url,

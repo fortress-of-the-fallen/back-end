@@ -1,0 +1,23 @@
+services:
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - "8010:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://root:123123123@mongo:27017/fortress_of_the_fallen?authSource=admin
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH_USERNAME=root
+      - ME_CONFIG_BASICAUTH_PASSWORD=123123123
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=123123123
+      - MONGO_INITDB_DATABASE=fortress_of_the_fallen
+    networks:
+      - fortress-of-the-fallen
+    depends_on:
+      - mongo
+
+networks:
+  fortress-of-the-fallen:
+    external: true

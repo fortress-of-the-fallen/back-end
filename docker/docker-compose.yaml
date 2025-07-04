@@ -1,0 +1,16 @@
+services:
+  app:
+    image: fortress-of-the-fallen:latest
+    build:
+      context: ../src
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+    networks:
+      - fortress-of-the-fallen
+
+networks:
+  fortress-of-the-fallen:
+    external: true

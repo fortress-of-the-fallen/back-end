@@ -1,0 +1,13 @@
+{
+    "app": {
+      "host": "0.0.0.0",
+      "port": 1234,
+      "locale": "en"
+    },
+    "connections": [
+      {
+        "name": "Local Mongo",
+        "connection_string": "mongodb://root:123123123@mongo:27017/fortress_of_the_fallen?authSource=admin"
+      }
+    ]
+  }
