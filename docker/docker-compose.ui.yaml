@@ -15,8 +15,6 @@ services:
       - MONGO_INITDB_DATABASE=fortress_of_the_fallen
     networks:
       - fortress-of-the-fallen
-    depends_on:
-      - mongo
 
 networks:
   fortress-of-the-fallen:
