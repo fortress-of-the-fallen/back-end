@@ -25,6 +25,12 @@ dev:
 	@printf "\033[36mRedisInsight: http://localhost:8011\033[0m\n"
 	@echo "-----------------------------------"
 
+build:
+	@cd src/Presentation && dotnet build
+	@cd src/Domain && dotnet build
+	@cd src/Infrastructure && dotnet build
+	@cd src/Application && dotnet build
+
 clean:
 	@rm -rf docker/data || true
 	@cd src/Presentation && dotnet clean || true

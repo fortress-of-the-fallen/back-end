@@ -1,9 +1,7 @@
-﻿namespace Domain.IEntities;
+﻿namespace Domain.IEntity;
 
 public interface IBaseEntity
 {
-    Guid Id { get; set; }
-
     Guid CreatedBy { get; set; }
 
     DateTimeOffset CreatedAt { get; set; }
