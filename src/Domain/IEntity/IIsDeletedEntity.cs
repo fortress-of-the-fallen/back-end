@@ -1,6 +1,6 @@
 ﻿namespace Domain.IEntity;
 
-public interface IIsDeletedEntity
+public interface IIsDeletedEntity : IBaseEntity
 {
     bool IsDeleted { get; set; }
 }

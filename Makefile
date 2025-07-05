@@ -1,4 +1,7 @@
 up:
+	@set +a
+	@source .env || true
+	@set -a
 	@docker network create fortress-of-the-fallen || true
 	@cd docker && docker compose -f docker-compose.yaml \
 		-f docker-compose.database.yaml \
