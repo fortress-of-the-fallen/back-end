@@ -62,6 +62,7 @@ public class BaseWriteRepository<T> : BaseReadRepository<T>, IBaseWriteRepositor
     public async Task ExecuteAsync()
     {
         if (_commands.Count == 0) return;
+        
         await _collection.BulkWriteAsync(_commands);
         _commands.Clear();
     }

@@ -49,7 +49,7 @@ public class BaseReadRepository<T> : IBaseReadRepository<T>
             )
         );
 
-        _pipeline.Append(renderedFilter);
+        _pipeline.Append(new BsonDocument("$match", renderedFilter));
         return this;
     }
 
@@ -122,10 +122,10 @@ public class BaseReadRepository<T> : IBaseReadRepository<T>
         return this;
     }
 
-    public IEnumerable<T> ToList()
+    public async Task<IEnumerable<T>> ToListAsync()
     {
-        var result = _collection.Aggregate<T>(_pipeline.ToList());
-        return result.ToEnumerable();
+        var result = await _collection.Aggregate<T>(_pipeline.ToList()).ToListAsync();
+        return result;
     }
 
     private string GetMemberName<TSource, TProperty>(Expression<Func<TSource, TProperty>> expression)

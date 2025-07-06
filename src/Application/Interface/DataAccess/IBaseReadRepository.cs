@@ -22,5 +22,5 @@ public interface IBaseReadRepository<T>
         string? asField = null
     ) where TForeign : IBaseEntity;
 
-    IEnumerable<T> ToList();
+    Task<IEnumerable<T>> ToListAsync();
 }
