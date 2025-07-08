@@ -12,7 +12,7 @@ public class BaseDbContext
     public BaseDbContext(IMongoClient client, IConfiguration configuration)
     {
         _configuration = configuration;
-        _database = client.GetDatabase(configuration["MongoDbSettings:DefaultDatabase"]);
+        _database = client.GetDatabase(configuration["MongoDbSettings:BaseDatabase"]);
     }
 
     public IMongoCollection<T> GetCollection<T>()

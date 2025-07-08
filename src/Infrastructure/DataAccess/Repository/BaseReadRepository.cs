@@ -4,56 +4,28 @@ using Infrastructure.DataAccess.DbContext;
 using MongoDB.Driver;
 namespace Infrastructure.DataAccess.Repository;
 using Domain.IEntity;
+using Infrastructure.DataAccess.Deferred;
 using MongoDB.Bson;
 
 public class BaseReadRepository<T> : IBaseReadRepository<T>
     where T : IBaseEntity, IIsDeletedEntity
 {
-    private readonly GameDbContext<T> _context;
+    private readonly IDeferredQuery<T> _deferredQuery;
 
-    protected readonly IMongoCollection<T> _collection;
+    private readonly BaseDbContext _context;
 
-    protected readonly IEnumerable<BsonDocument> _pipeline = new List<BsonDocument>();
-
-    public BaseReadRepository(
-        GameDbContext<T> context
-    )
+    public BaseReadRepository(BaseDbContext context)
     {
         _context = context;
-        _collection = _context.GetCollection<T>(); 
+        _deferredQuery = new DeferredQuery<T>(context);
     }
 
-    public IBaseReadRepository<T> QueryCondition(Expression<Func<T, bool>> filter)
+    public IDeferredQuery<T> QueryCondition(Expression<Func<T, bool>> filter)
     {
-        Expression<Func<T, bool>> combinedFilter = filter;
-
-        if (typeof(IIsDeletedEntity).IsAssignableFrom(typeof(T)))
-        {
-            var param = filter.Parameters[0];
-            var isDeletedProp = Expression.Property(param, nameof(IIsDeletedEntity.IsDeleted));
-            var notDeleted = Expression.Not(isDeletedProp);
-            var isNotDeletedExpr = Expression.Lambda<Func<T, bool>>(notDeleted, param);
-
-            combinedFilter = Expression.Lambda<Func<T, bool>>(
-                Expression.AndAlso(filter.Body, isNotDeletedExpr.Body),
-                param
-            );
-        }
-        
-        var mongoFilter = Builders<T>.Filter.Where(combinedFilter);
-    
-        var renderedFilter = mongoFilter.Render(
-            new RenderArgs<T>(
-                _collection.DocumentSerializer,
-                _collection.Settings.SerializerRegistry
-            )
-        );
-
-        _pipeline.Append(new BsonDocument("$match", renderedFilter));
-        return this;
+        return _deferredQuery.QueryCondition(filter);
     }
 
-    public IBaseReadRepository<T> Join<TForeign, TLocalKey, TForeignKey, TResult>(
+    public IDeferredQuery<T> Join<TForeign, TLocalKey, TForeignKey, TResult>(
         IBaseReadRepository<TForeign> from, 
         Expression<Func<T, TLocalKey>> localField, 
         Expression<Func<TForeign, TForeignKey>> foreignField, 
@@ -61,81 +33,29 @@ public class BaseReadRepository<T> : IBaseReadRepository<T>
         string? asField = null
     ) where TForeign : IBaseEntity
     {
-        string localFieldName = GetMemberName(localField);
-        string foreignFieldName = GetMemberName(foreignField);
-        string foreignCollectionName = typeof(TForeign).Name;
-        string asFieldName = asField ?? typeof(TForeign).Name;
-
-        var letVariableName = "localValue";
-
-        var lookup = new BsonDocument("$lookup", new BsonDocument
-        {
-            { "from", foreignCollectionName },
-            { "let", new BsonDocument { { letVariableName, $"${localFieldName}" } } },
-            { "pipeline", new BsonArray {
-                new BsonDocument("$match", new BsonDocument {
-                    { "$expr", new BsonDocument("$and", new BsonArray {
-                        new BsonDocument("$eq", new BsonArray { $"${foreignFieldName}", $"$${letVariableName}" }),
-                        new BsonDocument("$eq", new BsonArray { "$IsDeleted", false })
-                    }) }
-                })
-            } },
-            { "as", asFieldName }
-        });
-
-        _pipeline.Append(lookup);
-
-        return this;
+        return _deferredQuery.Join(from, localField, foreignField, resultSelector, asField);
     }
 
-    public IBaseReadRepository<T> Limit(int count)
+    public IDeferredQuery<T> Limit(int count)
     {
-        var limitStage = new BsonDocument("$limit", count);
-        _pipeline.Append(limitStage);
-
-        return this;
+        return _deferredQuery.Limit(count);
     }
 
-    public IBaseReadRepository<T> Skip(int count)
+    public IDeferredQuery<T> Skip(int count)
     {
-        var skipStage = new BsonDocument("$skip", count);
-        _pipeline.Append(skipStage);
-
-        return this;
+        return _deferredQuery.Skip(count);
     }
 
-    public IBaseReadRepository<T> SortBy<TKey>(
+    public IDeferredQuery<T> SortBy<TKey>(
         Expression<Func<T, TKey>> keySelector, 
         bool ascending = true
     )
     {
-        string fieldName = GetMemberName(keySelector);
-        int sortOrder = ascending ? 1 : -1;
-
-        var sortStage = new BsonDocument("$sort", new BsonDocument
-        {
-            { fieldName, sortOrder }
-        });
-
-        _pipeline.Append(sortStage);
-
-        return this;
+        return _deferredQuery.SortBy(keySelector, ascending);
     }
 
     public async Task<IEnumerable<T>> ToListAsync()
     {
-        var result = await _collection.Aggregate<T>(_pipeline.ToList()).ToListAsync();
-        return result;
-    }
-
-    private string GetMemberName<TSource, TProperty>(Expression<Func<TSource, TProperty>> expression)
-    {
-        if (expression.Body is MemberExpression member)
-            return member.Member.Name;
-
-        if (expression.Body is UnaryExpression unary && unary.Operand is MemberExpression memberExpr)
-            return memberExpr.Member.Name;
-
-        throw new InvalidOperationException("Could not extract field name from expression.");
+        return await _deferredQuery.ToListAsync();
     }
 }
