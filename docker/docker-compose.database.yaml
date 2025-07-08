@@ -1,0 +1,28 @@
+services:
+  mongo:
+    image: mongo:6.0
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123123123
+      MONGO_INITDB_DATABASE: fortress_of_the_fallen
+    volumes:
+      - ./data/mongo:/data/db
+      - ./mongo/init.js:/docker-entrypoint-initdb.d/init.js:ro
+    networks:
+      - fortress-of-the-fallen
+  
+  redis:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8011:8001" 
+    networks:
+      - fortress-of-the-fallen
+
+networks:
+  fortress-of-the-fallen:
+    external: true
+
