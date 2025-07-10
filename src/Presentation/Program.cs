@@ -1,6 +1,7 @@
 using WebApi.Configurations;
 using Serilog;
 using Microsoft.Extensions.Hosting;
+using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiVersionings();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDenpendencies(builder.Configuration);
 
 builder.Host.UseSerilog((ctx, lc) => lc
     .ReadFrom.Configuration(ctx.Configuration));

@@ -1,3 +1,4 @@
+using Domain.Constains;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
@@ -12,7 +13,7 @@ public class BaseDbContext
     public BaseDbContext(IMongoClient client, IConfiguration configuration)
     {
         _configuration = configuration;
-        _database = client.GetDatabase(configuration["MongoDbSettings:BaseDatabase"]);
+        _database = client.GetDatabase(configuration[ConfigKeys.MongoDbSettings.DefaultDatabase]);
     }
 
     public IMongoCollection<T> GetCollection<T>()
