@@ -1,7 +1,6 @@
 using Application.Interface.DataAccess;
 using Domain.IEntity;
 using Infrastructure.DataAccess.DbContext;
-using Infrastructure.DataAccess.Deferred;
 using MongoDB.Driver;
 
 namespace Infrastructure.DataAccess.Repository;
@@ -9,33 +8,36 @@ namespace Infrastructure.DataAccess.Repository;
 public class BaseWriteRepository<T> : BaseReadRepository<T>, IBaseWriteRepository<T>
     where T : IBaseEntity, IIsDeletedEntity
 {
-    private readonly List<WriteModel<T>> _commands;
+    private IEnumerable<WriteModel<T>> _commands = new List<WriteModel<T>>();
 
-    public BaseWriteRepository(BaseDbContext context, List<WriteModel<T>> commands) : base(context)
-    {
-        _commands = commands;
-    }
+    public BaseWriteRepository(BaseDbContext context) : base(context) { }
 
-    public async Task ExecuteAsync()
+    public async Task<IBaseWriteRepository<T>> ExecuteAsync()
     {
-        if (_commands.Count == 0) return;
+        if (_commands.Count() == 0) return this;
 
         await _collection.BulkWriteAsync(_commands);
-        _commands.Clear();
+        _commands = new List<WriteModel<T>>();
+
+        return this;
     }
 
-    public void HardDelete(T entity)
+    public IBaseWriteRepository<T> HardDelete(T entity)
     {
         var filter = Builders<T>.Filter.Eq(x => x.Id, entity.Id);
-        _commands.Add(new DeleteOneModel<T>(filter));
+        _commands = _commands.Append(new DeleteOneModel<T>(filter));
+
+        return this;
     }
 
-    public void Insert(T entity)
+    public IBaseWriteRepository<T> Insert(T entity)
     {
-        _commands.Add(new InsertOneModel<T>(entity));
+        _commands = _commands.Append(new InsertOneModel<T>(entity));
+
+        return this;
     }
 
-    public void Restore(T entity)
+    public IBaseWriteRepository<T> Restore(T entity)
     {
         if (entity is not IIsDeletedEntity)
         {
@@ -49,10 +51,12 @@ public class BaseWriteRepository<T> : BaseReadRepository<T>, IBaseWriteRepositor
 
         var filter = Builders<T>.Filter.Eq(x => x.Id, entity.Id);
         var update = Builders<T>.Update.Set(x => x.IsDeleted, false);
-        _commands.Add(new UpdateOneModel<T>(filter, update));
+        _commands = _commands.Append(new UpdateOneModel<T>(filter, update));
+
+        return this;
     }
 
-    public void SoftDelete(T entity)
+    public IBaseWriteRepository<T> SoftDelete(T entity)
     {
         if (entity is not IIsDeletedEntity)
         {
@@ -61,13 +65,17 @@ public class BaseWriteRepository<T> : BaseReadRepository<T>, IBaseWriteRepositor
 
         var filter = Builders<T>.Filter.Eq(x => x.Id, entity.Id);
         var update = Builders<T>.Update.Set(x => x.IsDeleted, true);
-        _commands.Add(new UpdateOneModel<T>(filter, update));
+        _commands = _commands.Append(new UpdateOneModel<T>(filter, update));
+
+        return this;
     }
 
-    public void Update(T entity)
+    public IBaseWriteRepository<T> Update(T entity)
     {
         var filter = Builders<T>.Filter.Eq(x => x.Id, entity.Id);
         var update = Builders<T>.Update.Set(x => x.UpdatedAt, DateTime.UtcNow);
-        _commands.Add(new UpdateOneModel<T>(filter, update));
+        _commands = _commands.Append(new UpdateOneModel<T>(filter, update));
+
+        return this;
     }
 }

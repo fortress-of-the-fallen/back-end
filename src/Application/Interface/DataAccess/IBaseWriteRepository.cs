@@ -5,15 +5,15 @@ namespace Application.Interface.DataAccess;
 public interface IBaseWriteRepository<T>
     where T : IBaseEntity, IIsDeletedEntity
 {
-    void Insert(T entity);
+    IBaseWriteRepository<T> Insert(T entity);
 
-    void Update(T entity);
+    IBaseWriteRepository<T> Update(T entity);
 
-    void SoftDelete(T entity);
+    IBaseWriteRepository<T> SoftDelete(T entity);
 
-    void HardDelete(T entity);
+    IBaseWriteRepository<T> HardDelete(T entity);
 
-    void Restore(T entity);
+    IBaseWriteRepository<T> Restore(T entity);
 
-    Task ExecuteAsync();
+    Task<IBaseWriteRepository<T>> ExecuteAsync();
 }

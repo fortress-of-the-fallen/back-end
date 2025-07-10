@@ -6,15 +6,15 @@ namespace Application.Interface.DataAccess;
 public interface IBaseReadRepository<T>
     where T : IBaseEntity
 {
-    IDeferredQuery<T> QueryCondition(Expression<Func<T, bool>> filter);
+    IBaseReadRepository<T> QueryCondition(Expression<Func<T, bool>> filter);
 
-    IDeferredQuery<T> SortBy<TKey>(Expression<Func<T, TKey>> keySelector, bool ascending = true);
+    IBaseReadRepository<T> SortBy<TKey>(Expression<Func<T, TKey>> keySelector, bool ascending = true);
 
-    IDeferredQuery<T> Skip(int count);
+    IBaseReadRepository<T> Skip(int count);
 
-    IDeferredQuery<T> Limit(int count);
+    IBaseReadRepository<T> Limit(int count);
 
-    IDeferredQuery<T> Join<TForeign, TLocalKey, TForeignKey, TResult>(
+    IBaseReadRepository<T> Join<TForeign, TLocalKey, TForeignKey, TResult>(
         IBaseReadRepository<TForeign> from,
         Expression<Func<T, TLocalKey>> localField,
         Expression<Func<TForeign, TForeignKey>> foreignField,
