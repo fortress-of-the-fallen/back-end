@@ -4,10 +4,7 @@ public static class ConfigKeys
 {
     public static class Redis
     {
-        public const string Connection = "Redis:Connection";
-        public const string InstanceName = "Redis:InstanceName";
-        public const string ConnectRetry = "Redis:ConnectRetry";
-        public const string ConnectTimeout = "Redis:ConnectTimeout";
+        public const string ConnectionString = "Redis:ConnectionString";
     }
 
     public static class MongoDbSettings

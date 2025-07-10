@@ -7,7 +7,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 
 public class BaseReadRepository<T> : IBaseReadRepository<T>
-    where T : IBaseEntity, IIsDeletedEntity
+    where T : IBaseEntity
 {
     protected IEnumerable<BsonDocument> _pipeline = new List<BsonDocument>();
 
@@ -18,7 +18,12 @@ public class BaseReadRepository<T> : IBaseReadRepository<T>
         _collection = context.GetCollection<T>();
     }
 
-    public IBaseReadRepository<T> Join<TForeign, TLocalKey, TForeignKey, TResult>(IBaseReadRepository<TForeign> from, Expression<Func<T, TLocalKey>> localField, Expression<Func<TForeign, TForeignKey>> foreignField, Expression<Func<T, IEnumerable<TForeign>, TResult>> resultSelector, string? asField = null) where TForeign : IBaseEntity
+    public IBaseReadRepository<T> Join<TForeign, TLocalKey, TForeignKey, TResult>(
+        IBaseReadRepository<TForeign> from, 
+        Expression<Func<T, TLocalKey>> localField, 
+        Expression<Func<TForeign, TForeignKey>> foreignField, 
+        Expression<Func<T, IEnumerable<TForeign>, TResult>> resultSelector, string? asField = null) 
+            where TForeign : IBaseEntity
     {
         string localFieldName = GetMemberName(localField);
         string foreignFieldName = GetMemberName(foreignField);
@@ -59,18 +64,15 @@ public class BaseReadRepository<T> : IBaseReadRepository<T>
     {
         Expression<Func<T, bool>> combinedFilter = filter;
 
-        if (typeof(IIsDeletedEntity).IsAssignableFrom(typeof(T)))
-        {
-            var param = filter.Parameters[0];
-            var isDeletedProp = Expression.Property(param, nameof(IIsDeletedEntity.IsDeleted));
-            var notDeleted = Expression.Not(isDeletedProp);
-            var isNotDeletedExpr = Expression.Lambda<Func<T, bool>>(notDeleted, param);
+        var param = filter.Parameters[0];
+        var isDeletedProp = Expression.Property(param, nameof(IBaseEntity.IsDeleted));
+        var notDeleted = Expression.Not(isDeletedProp);
+        var isNotDeletedExpr = Expression.Lambda<Func<T, bool>>(notDeleted, param);
 
-            combinedFilter = Expression.Lambda<Func<T, bool>>(
-                Expression.AndAlso(filter.Body, isNotDeletedExpr.Body),
-                param
-            );
-        }
+        combinedFilter = Expression.Lambda<Func<T, bool>>(
+            Expression.AndAlso(filter.Body, isNotDeletedExpr.Body),
+            param
+        );
 
         var mongoFilter = Builders<T>.Filter.Where(combinedFilter);
 

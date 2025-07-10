@@ -1,4 +1,6 @@
+using Application.Feature.Samples.Command;
 using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FortressOfTheFallen.Presentation.Controller.v1;
@@ -8,8 +10,10 @@ namespace FortressOfTheFallen.Presentation.Controller.v1;
 public class HelloController : BaseController
 {
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get(ISender sender)
     {
-        return Ok("Hello from version 1");
+        var result = await sender.Send(new CreateSampleCommand("Sample", "Sample Description"));
+
+        return Ok(result);
     }
 }

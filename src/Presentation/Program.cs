@@ -1,6 +1,5 @@
 using WebApi.Configurations;
 using Serilog;
-using Microsoft.Extensions.Hosting;
 using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +33,7 @@ app.UseCors();
 
 try
 {
-    var url = "http://localhost:8080/docs";
+    var url = $"{Environment.GetEnvironmentVariable("ASPNETCORE_URLS")}/docs";
     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
     {
         FileName = url,

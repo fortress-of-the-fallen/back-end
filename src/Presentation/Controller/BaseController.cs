@@ -5,7 +5,6 @@ using WebApi.Models.Responses.Base;
 
 namespace FortressOfTheFallen.Presentation.Controller;
 
-[Authorize]
 [ApiController]
 public class BaseController : ControllerBase
 {

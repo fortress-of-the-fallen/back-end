@@ -5,14 +5,15 @@ using MongoDB.Bson.Serialization.Attributes;
 public class BaseEntity : IBaseEntity
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-    public Guid CreatedBy { get; set; }
+    public Guid CreatedBy { get; set; } = Guid.Empty;
 
-    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
-    public Guid UpdatedBy { get; set; }
+    public Guid UpdatedBy { get; set; } = Guid.Empty;
 
-    public DateTimeOffset UpdatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+
+    public bool IsDeleted { get; set; } = false;
 }

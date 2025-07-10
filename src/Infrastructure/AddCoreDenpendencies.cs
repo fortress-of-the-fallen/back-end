@@ -1,6 +1,6 @@
 using Infrastructure.Caching;
-using Infrastructure.DataAccess.DbContext;
-using Infrastructure.DataAccess.UnitOfWork;
+using Infrastructure.DataAccess;
+using Infrastructure.MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +11,7 @@ public static class AddCoreDenpendencies
     public static void AddDenpendencies(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddRedis(configuration);
-        services.AddDbContext(configuration);
-        services.AddUoW();
+        services.AddDataAccess(configuration);
+        services.AddMediatR();
     }
 }
