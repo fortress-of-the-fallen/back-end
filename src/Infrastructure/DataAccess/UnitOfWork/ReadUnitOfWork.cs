@@ -7,12 +7,12 @@ namespace Infrastructure.DataAccess.UnitOfWork;
 
 public class ReadUnitOfWork(
     BaseDbContext context
-)
+) : IReadUnitOfWork
 {
     private readonly Dictionary<Type, object> _repositories = new();
 
     public IBaseReadRepository<T> GetRepository<T>()
-        where T : IBaseEntity, IIsDeletedEntity
+       where T : IBaseEntity
     {
         var type = typeof(BaseReadRepository<T>);
 

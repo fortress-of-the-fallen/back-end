@@ -3,7 +3,7 @@ using Domain.IEntity;
 namespace Application.Interface.DataAccess;
 
 public interface IBaseWriteRepository<T>
-    where T : IBaseEntity, IIsDeletedEntity
+    where T : IBaseEntity
 {
     IBaseWriteRepository<T> Insert(T entity);
 

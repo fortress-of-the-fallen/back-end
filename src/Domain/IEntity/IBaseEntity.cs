@@ -16,4 +16,6 @@ public interface IBaseEntity
     Guid UpdatedBy { get; set; }
 
     DateTimeOffset UpdatedAt { get; set; }
+
+    bool IsDeleted { get; set; }
 }

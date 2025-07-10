@@ -7,12 +7,12 @@ namespace Infrastructure.DataAccess.UnitOfWork;
 
 public class WriteUnitOfWork(
     BaseDbContext context
-)
+) : IWriteUnitOfWork
 {
     private readonly Dictionary<Type, object> _repositories = new();
 
     public IBaseWriteRepository<T> GetRepository<T>()
-        where T : IBaseEntity, IIsDeletedEntity
+        where T : IBaseEntity
     {
         var type = typeof(BaseWriteRepository<T>);
 
