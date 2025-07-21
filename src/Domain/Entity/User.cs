@@ -1,19 +1,27 @@
-using System.ComponentModel.DataAnnotations;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
 namespace Domain.Entity;
 
 public class User : BaseEntity
 {
-    [MaxLength(32)]
-    [MinLength(8)]
-    public required string UserName { get; set; }
+    public string? Email { get; set; }
 
-    [MaxLength(32)]
-    [EmailAddress]
-    [MinLength(8)]
-    public required string Email { get; set; }
+    public string? UserName { get; set; }
 
     public string? PasswordHash { get; set; }
+
+    public string? CurrentSessionId { get; set; }
+
+    public GithubUser? GithubUser { get; set; }
+}
+
+public class GithubUser
+{
+    public long Id { get; set; }
+
+    public required string Login { get; set; }
+
+    public required string Name { get; set; }
+
+    public string? Email { get; set; }
+
+    public required string AvatarUrl { get; set; } 
 }

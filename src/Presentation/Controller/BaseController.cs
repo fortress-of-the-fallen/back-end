@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Models.Responses.Base;
+using Presentation.Models.Responses.Base;
 
 namespace FortressOfTheFallen.Presentation.Controller;
 

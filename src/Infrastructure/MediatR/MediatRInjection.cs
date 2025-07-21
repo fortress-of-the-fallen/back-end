@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Application.Feature.Samples.Command;
+using Application.Feature.Auth.Commands;
 
 namespace Infrastructure.MediatR;
 
@@ -7,6 +7,6 @@ public static class MediatRInjection
 {
     public static void AddMediatR(this IServiceCollection services)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateSampleCommandHandler).Assembly));
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GithubLoginCommandHandler).Assembly));
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Domain.IEntity;
 
 namespace Application.Interface.DataAccess;
@@ -15,5 +16,7 @@ public interface IBaseWriteRepository<T>
 
     IBaseWriteRepository<T> Restore(T entity);
 
-    Task<IBaseWriteRepository<T>> ExecuteAsync();
+    Task ExecuteAsync(CancellationToken cancellationToken = default);
+
+    Task<T> Single(Expression<Func<T, bool>> filter);
 }

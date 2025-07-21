@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain.Constants;
 
-namespace WebApi.Models.Requests.Base;
+namespace Presentation.Models.Requests.Base;
 
 public class SearchReq : IPaginator, ISorting
 {

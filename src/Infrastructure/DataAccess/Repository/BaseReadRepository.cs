@@ -60,6 +60,22 @@ public class BaseReadRepository<T> : IBaseReadRepository<T>
         return this;
     }
 
+    public async Task<T?> Single(Expression<Func<T, bool>> filter)
+    {
+        var parameter = filter.Parameters[0];
+
+        var isDeleteProp = Expression.Property(parameter, "IsDeleted");
+        var isDeleteNotTrue = Expression.NotEqual(
+            isDeleteProp,
+            Expression.Constant(true, typeof(bool))
+        );
+
+        var combinedBody = Expression.AndAlso(filter.Body, isDeleteNotTrue);
+        var combined = Expression.Lambda<Func<T, bool>>(combinedBody, parameter);
+
+        return await _collection.Find(combined).SingleOrDefaultAsync();
+    }
+
     public IBaseReadRepository<T> QueryCondition(Expression<Func<T, bool>> filter)
     {
         Expression<Func<T, bool>> combinedFilter = filter;

@@ -46,19 +46,20 @@ public class CacheManager(
         }
     }
 
-    public async Task<bool> SetData<T>(string key, T value, TimeSpan duration)
+    public async Task<bool> SetData<T>(string key, T value, TimeSpan duration, CancellationToken cancellationToken = default)
     {
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (_redisDb == null) return false;
 
             var jsonData = JsonConvert.SerializeObject(value);
             var res = await _redisDb.StringSetAsync(key, jsonData, duration);
             return res;
         }
-        catch (Exception ex)
+        catch (OperationCanceledException)
         {
-            logger.LogError("[SetData] Redis connection error: {ex}", ex);
+            logger.LogError("[SetData] Redis connection error: {ex}", "Operation was canceled.");
             return false;
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace WebApi.Models.Requests.Base;
+﻿namespace Presentation.Models.Requests.Base;
 
 public interface ISorting
 {
