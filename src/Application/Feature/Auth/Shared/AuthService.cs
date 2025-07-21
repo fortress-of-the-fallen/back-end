@@ -26,6 +26,6 @@ public class AuthService(
             UserAgent = httpContextAccessor.HttpContext?.Request.Headers[GlobalConstants.Headers.UserAgent].ToString() ?? string.Empty
         };
 
-        await cacheManager.SetData<Session>(user.CurrentSessionId!, session, TimeSpan.FromHours(GlobalConstants.Session.SessionDurationHours), cancellationToken);
+        await cacheManager.SetData<Session>(GlobalConstants.Session.SessionId(user.CurrentSessionId!), session, TimeSpan.FromHours(GlobalConstants.Session.SessionDurationHours), cancellationToken);
     }
 }

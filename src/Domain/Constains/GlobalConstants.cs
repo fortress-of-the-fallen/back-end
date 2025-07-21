@@ -76,6 +76,7 @@ public static class GlobalConstants
     {
         public const int IdLength = 15;
         public const int SessionDurationHours = 1;
+        public static string SessionId (string id) => $"session-{id}";
     }
 
     public struct Headers
