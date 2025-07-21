@@ -18,7 +18,9 @@ public class BaseReadRepository<T> : IBaseReadRepository<T>
     {
         _collection = context.GetCollection<T>();
 
-        if (isTimeToLive)
+        var indexList = _collection.Indexes.List().ToList();
+        var exist = indexList.Any(x => x["name"] == "ExpireAt");      
+        if (isTimeToLive && !exist)
         {
             var indexKeys = Builders<T>.IndexKeys.Ascending("ExpireAt");
             var indexOptions = new CreateIndexOptions { ExpireAfter = TimeSpan.Zero };
