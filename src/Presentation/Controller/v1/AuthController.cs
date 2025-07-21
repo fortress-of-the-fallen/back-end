@@ -21,11 +21,14 @@ public class AuthController : BaseController
     /// </remarks>
     [Route("github-login")]
     [HttpGet]
-    public async Task<IActionResult> GithubLogin(ISender sender, [FromQuery] string code)
+    public async Task<IActionResult> GithubLogin(
+        ISender sender,
+        [FromQuery] string code,
+        [FromQuery] string state)
     {
         var response = new ExecutionRes();
 
-        var errorCode = await sender.Send(new GithubLoginCommand { Code = code });
+        var errorCode = await sender.Send(new GithubLoginCommand { Code = code, State = state });
         if (!string.IsNullOrEmpty(errorCode))
         {
             response.ErrorCode = errorCode;

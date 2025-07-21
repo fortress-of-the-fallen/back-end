@@ -3,6 +3,7 @@ using Infrastructure.Caching;
 using Infrastructure.DataAccess;
 using Infrastructure.IdGenerator;
 using Infrastructure.MediatR;
+using Infrastructure.Realtime;
 using Infrastructure.Restful;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,5 +20,6 @@ public static class AddCoreDenpendencies
         services.AddRestfulService();
         services.AddIdGenerator();
         services.AddFeatureInjection();
+        services.AddRealTimeServices(configuration);
     }
 }
