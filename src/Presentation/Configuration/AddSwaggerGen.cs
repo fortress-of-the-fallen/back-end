@@ -20,7 +20,7 @@ public static class AddSwaggerGen
                 Version = "v1",
                 Description = $@"
 👉 **Remember to click 'Authorize' and enter your SessionId.**  
-🔗 GitHub SSO: https://github.com/login/oauth/authorize?client_id={configuration[ConfigKeys.Authorization.GithubSSO.ClientId]}&redirect_uri={configuration[ConfigKeys.Authorization.GithubSSO.CallbackUrl]}&scope=read:user%20user:email&state=
+🔗 GitHub SSO: https://github.com/login/oauth/authorize?client_id={configuration[ConfigKeys.Authorization.GithubSSO.ClientId]}&redirect_uri={configuration[ConfigKeys.Authorization.GithubSSO.CallbackUrl]}&scope=read:user%20user:email&state=Jx8DmnKqJZvNE-
 "
         });
 

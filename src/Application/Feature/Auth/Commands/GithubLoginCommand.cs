@@ -1,8 +1,11 @@
 using System.Text.Json;
+using Application.Dto.RealTime;
 using Application.Feature.Auth.Shared;
+using Application.Interface.Broadcast;
 using Application.Interface.DataAccess;
 using Application.Interface.Identity;
 using Application.Interfaces.Restful;
+using Domain.Constants;
 using Domain.Entity;
 using Domain.Message;
 using MediatR;
@@ -13,6 +16,8 @@ namespace Application.Feature.Auth.Commands;
 public record GithubLoginCommand : IRequest<string>
 {
     public required string Code { get; init; }
+
+    public required string State { get; init; }
 }
 
 public class GithubLoginCommandHandler(
@@ -20,7 +25,8 @@ public class GithubLoginCommandHandler(
     IRestfulService restfulService,
     IWriteUnitOfWork writeUnitOfWork,
     IIdGenerator idGenerator,
-    IAuthService authService
+    IAuthService authService,
+    IBroadcastMessageService broadcastMessageService
 ) : IRequestHandler<GithubLoginCommand, string>
 {
     private readonly string _clientId = configuration[Domain.Constains.ConfigKeys.Authorization.GithubSSO.ClientId];
@@ -48,6 +54,18 @@ public class GithubLoginCommandHandler(
         }
 
         await authService.CreateSessionAsync(user, cancellationToken);
+
+        await broadcastMessageService.SendMessageToGroupAsync(
+            request.State,
+            new BroadcastMessage<LoginSessionDto>
+            {
+                Action = RealTimeConstants.Actions.JoinLoginSession,
+                Data = new LoginSessionDto
+                {
+                    SessionId = request.State,
+                }
+            }
+        );
 
         return string.Empty;
     }

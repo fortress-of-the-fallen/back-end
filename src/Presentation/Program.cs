@@ -3,6 +3,7 @@ using Serilog;
 using Infrastructure;
 using Presentation.Configuration;
 using Presentation.Middleware;
+using Infrastructure.Realtime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,7 @@ try
 }
 catch { }
 
+app.AddHub();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapControllers();
 app.Run();
