@@ -5,11 +5,13 @@ services:
       context: ../src
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "5000:5000"
     environment:
-      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_URLS=http://+:5000
     networks:
       - fortress-of-the-fallen
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 networks:
   fortress-of-the-fallen:

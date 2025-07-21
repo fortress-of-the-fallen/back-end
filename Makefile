@@ -1,12 +1,6 @@
 up:
-	@set +a
-	@source .env || true
-	@set -a
-	@docker network create fortress-of-the-fallen || true
-	@cd docker && docker compose -f docker-compose.yaml \
-		-f docker-compose.database.yaml \
-		-f docker-compose.ui.yaml up -d
-	@cd docker && docker compose build
+	@cd docker && docker compose -f docker-compose.database.yaml up -d
+	@cd docker && docker compose up --build -d
 	@echo "-----------------------------------"
 	@printf "\033[36mMongo Express: http://localhost:8010\033[36m\n"
 	@printf "\033[36mRedisInsight: http://localhost:8011\033[0m\n"

@@ -1,7 +1,8 @@
+namespace Infrastructure.DataAccess.Repository;
+
 using System.Linq.Expressions;
 using Application.Interface.DataAccess;
 using Infrastructure.DataAccess.DbContext;
-namespace Infrastructure.DataAccess.Repository;
 using Domain.IEntity;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -13,9 +14,16 @@ public class BaseReadRepository<T> : IBaseReadRepository<T>
 
     protected IMongoCollection<T> _collection;
 
-    public BaseReadRepository(BaseDbContext context)
+    public BaseReadRepository(BaseDbContext context, bool isTimeToLive = false)
     {
         _collection = context.GetCollection<T>();
+
+        if (isTimeToLive)
+        {
+            var indexKeys = Builders<T>.IndexKeys.Ascending("ExpireAt");
+            var indexOptions = new CreateIndexOptions { ExpireAfter = TimeSpan.Zero };
+            _collection.Indexes.CreateOne(new CreateIndexModel<T>(indexKeys, indexOptions));
+        }
     }
 
     public IBaseReadRepository<T> Join<TForeign, TLocalKey, TForeignKey, TResult>(
