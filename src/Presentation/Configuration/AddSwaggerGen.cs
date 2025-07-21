@@ -15,17 +15,18 @@ public static class AddSwaggerGen
             c.IncludeXmlComments(xmlPath);
             c.EnableAnnotations();
             c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "My API",
-                Version = "v1",
-                Description = $@"
-👉 **Remember to click 'Authorize' and enter your SessionId.**  
-🔗 GitHub SSO: https://github.com/login/oauth/authorize?client_id={configuration[ConfigKeys.Authorization.GithubSSO.ClientId]}&redirect_uri={configuration[ConfigKeys.Authorization.GithubSSO.CallbackUrl]}&scope=read:user%20user:email&state=Jx8DmnKqJZvNE-
-** SignalR Hub: `/hubs/auth` **
-    JoinLoginSessionChannel(string sessionId) - Subscribe to a login session channel.
-    LeaveLoginSessionChannel(string sessionId) - Unsubscribe from a login session channel.
-"
-        });
+{
+    Title = "My API",
+    Version = "v1",
+    Description = $@"
+<p>👉 <strong>Remember to click 'Authorize' and enter your SessionId.</strong></p>
+<p>🔗 GitHub SSO: <a href='https://github.com/login/oauth/authorize?client_id={configuration[ConfigKeys.Authorization.GithubSSO.ClientId]}&redirect_uri={configuration[ConfigKeys.Authorization.GithubSSO.CallbackUrl]}&scope=read:user%20user:email&state=Jx8DmnKqJZvNE-'>Click here</a></p>
+<p><strong>SignalR Hub:</strong> <code>/hubs/auth</code></p>
+<ul>
+    <li><code>JoinLoginSessionChannel(string sessionId)</code> – Subscribe to a login session channel.</li>
+    <li><code>LeaveLoginSessionChannel(string sessionId)</code> – Unsubscribe from a login session channel.</li>
+</ul>"
+});
 
             c.AddSecurityDefinition("SessionId", new OpenApiSecurityScheme
             {
