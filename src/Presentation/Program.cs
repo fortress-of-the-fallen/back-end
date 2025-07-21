@@ -6,13 +6,25 @@ using Presentation.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var loggerConfig = new LoggerConfiguration()
+    .WriteTo.File("Logs/app.log",
+        rollingInterval: RollingInterval.Day,
+        outputTemplate: "[{Timestamp:dd/MM/yyyy HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+
+if(builder.Environment.IsDevelopment())
+{
+    loggerConfig.WriteTo.Console(outputTemplate: "[{Timestamp:dd/MM/yyyy HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+}
+
+Log.Logger = loggerConfig.CreateLogger();
+
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiVersionings();
 builder.Services.AddSwaggerDocumentation(configuration: builder.Configuration);
 builder.Services.AddDenpendencies(builder.Configuration);
-builder.Host.UseSerilog((ctx, lc) => lc
-    .ReadFrom.Configuration(ctx.Configuration));
+builder.Host.UseSerilog();
 
 builder.Services.AddCors(options => options
     .AddDefaultPolicy(policy => policy

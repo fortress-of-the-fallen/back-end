@@ -72,13 +72,6 @@ public static class GlobalConstants
         public const string ExcelContentType = "application/excel";
     }
 
-    public struct Session
-    {
-        public const int IdLength = 15;
-        public const int SessionDurationHours = 1;
-        public static string SessionId (string id) => $"session-{id}";
-    }
-
     public struct Headers
     {
         public const string DeviceFingerprint = "X-Device-Fingerprint";

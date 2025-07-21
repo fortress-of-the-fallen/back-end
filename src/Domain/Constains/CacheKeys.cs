@@ -2,8 +2,10 @@ namespace Domain.Constants;
 
 public static class CacheKeys
 {
-    public static class Session
+    public struct Session
     {
-        public static string SessionId(string sessionId) => $"session:{sessionId}";
+        public const int IdLength = 15;
+        public const int SessionDurationHours = 1;
+        public static string SessionId (string id) => $"session-{id}";
     }
 }

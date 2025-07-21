@@ -20,7 +20,7 @@ public class Session
 
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
-    public DateTimeOffset ExpiredAt { get; set; } = DateTimeOffset.UtcNow.AddHours(GlobalConstants.Session.SessionDurationHours);
+    public DateTimeOffset ExpiredAt { get; set; } = DateTimeOffset.UtcNow.AddHours(CacheKeys.Session.SessionDurationHours);
 
     public bool IsExpired() => DateTimeOffset.UtcNow >= ExpiredAt;
 

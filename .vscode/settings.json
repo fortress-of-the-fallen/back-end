@@ -1,8 +1,7 @@
 {
     "files.exclude": {
         "**/bin": true,
-        "**/obj": true,
-        "**/.git": false
+        "**/obj": true
     },
     "thunder-client.multiRootWorkspaceName": "back-end",
 }

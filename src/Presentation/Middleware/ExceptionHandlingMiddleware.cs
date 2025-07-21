@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Presentation.Models.Responses.Base;
 
@@ -18,7 +19,7 @@ public class ExceptionHandlingMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-
+        var stopwatch = Stopwatch.StartNew();
         try
         {
             await _next(context);
@@ -33,6 +34,18 @@ public class ExceptionHandlingMiddleware
             _logger.LogError(ex, "An unhandled exception occurred while processing the request.");
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+        finally
+        {
+            stopwatch.Stop();
+
+            var elapsedMs = stopwatch.ElapsedMilliseconds;
+
+            _logger.LogInformation("Request {method} {path} took {time}ms",
+                context.Request.Method,
+                context.Request.Path,
+                elapsedMs
+            );
         }
     }
 }

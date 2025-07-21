@@ -8,6 +8,6 @@ public class IdGenerator : IIdGenerator
 {
     public string GenerateSessionId()
     {
-        return Nanoid.Generate(size: GlobalConstants.Session.IdLength);
+        return Nanoid.Generate(size: CacheKeys.Session.IdLength);
     }
 }
