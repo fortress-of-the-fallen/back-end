@@ -9,11 +9,11 @@ public interface IBaseEntity
     [BsonRepresentation(BsonType.String)]
     Guid Id { get; set; }
 
-    Guid CreatedBy { get; set; }
+    Guid? CreatedBy { get; set; }
 
     DateTimeOffset CreatedAt { get; set; }
 
-    Guid UpdatedBy { get; set; }
+    Guid? UpdatedBy { get; set; }
 
     DateTimeOffset UpdatedAt { get; set; }
 

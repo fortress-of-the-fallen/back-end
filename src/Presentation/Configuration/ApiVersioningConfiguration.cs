@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
 
-namespace WebApi.Configurations;
+namespace Presentation.Configurations;
 
 public static class ApiVersioningConfiguration
 {

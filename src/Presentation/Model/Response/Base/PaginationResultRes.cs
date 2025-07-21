@@ -1,4 +1,4 @@
-﻿namespace WebApi.Models.Responses.Base;
+﻿namespace Presentation.Models.Responses.Base;
 
 public class PaginationResultRes<T> : ResultRes<T>
 {

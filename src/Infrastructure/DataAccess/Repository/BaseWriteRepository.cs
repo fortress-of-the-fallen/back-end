@@ -8,9 +8,14 @@ namespace Infrastructure.DataAccess.Repository;
 public class BaseWriteRepository<T> : BaseReadRepository<T>, IBaseWriteRepository<T>
     where T : IBaseEntity
 {
-    private IEnumerable<WriteModel<T>> _commands = new List<WriteModel<T>>();
+    private IEnumerable<WriteModel<T>> _commands;
 
-    public BaseWriteRepository(BaseDbContext context) : base(context) { }
+    public BaseWriteRepository(
+        BaseDbContext context,
+        IEnumerable<WriteModel<T>> commands) : base(context)
+    {
+        _commands = commands;
+    }
 
     public IBaseWriteRepository<T> HardDelete(T entity)
     {
@@ -52,20 +57,20 @@ public class BaseWriteRepository<T> : BaseReadRepository<T>, IBaseWriteRepositor
 
     public IBaseWriteRepository<T> Update(T entity)
     {
+        entity.UpdatedAt = DateTime.UtcNow;
+        
         var filter = Builders<T>.Filter.Eq(x => x.Id, entity.Id);
-        var update = Builders<T>.Update.Set(x => x.UpdatedAt, DateTime.UtcNow);
-        _commands = _commands.Append(new UpdateOneModel<T>(filter, update));
+        var replaceOne = new ReplaceOneModel<T>(filter, entity);
+        _commands = _commands.Append(replaceOne);
 
         return this;
     }
 
-    public async Task<IBaseWriteRepository<T>> ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        if (_commands.Count() == 0) return this;
+        if (_commands.Count() == 0) return;
 
-        await _collection.BulkWriteAsync(_commands);
+        await _collection.BulkWriteAsync(_commands, cancellationToken: cancellationToken);
         _commands = new List<WriteModel<T>>();
-
-        return this;
     }
 }

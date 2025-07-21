@@ -1,12 +1,12 @@
-﻿namespace WebApi.Models.Responses.Base;
+﻿namespace Presentation.Models.Responses.Base;
 
 public class ExecutionRes
 {
-    public bool Success { get; set; }
+    public string? ErrorCode { get; set; } = string.Empty;
 
-    public string? ErrorCode { get; set; }
+    public string? Error { get; set; } = string.Empty;
 
-    public string? Error { get; set; }
+    public ValidateRes[]? Validates { get; set; } = Array.Empty<ValidateRes>();
 
-    public ValidateRes[]? Validates { get; set; }
+    public bool Success => string.IsNullOrEmpty(ErrorCode) && Validates?.Length == 0;
 }
