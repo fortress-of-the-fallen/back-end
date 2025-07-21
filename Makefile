@@ -1,4 +1,6 @@
 up:
+	@docker network create fortress-of-the-fallen || true
+	@echo "-----------------------------------"
 	@cd docker && docker compose -f docker-compose.database.yaml up -d
 	@cd docker && docker compose up --build -d
 	@echo "-----------------------------------"

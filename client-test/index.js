@@ -1,5 +1,9 @@
 import * as signalR from '@microsoft/signalr';
 
+// Login with sso
+// Open browser
+// Connect to SignalR hub
+
 const connection = new signalR.HubConnectionBuilder()
     .withUrl("http://localhost:5000/hubs/auth") 
     .withAutomaticReconnect()
